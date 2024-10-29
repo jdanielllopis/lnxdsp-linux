@@ -1,0 +1,57 @@
+name: adsp-sc5xx linux build
+run-name: ${{ github.actor }} pushed a change ( ${{ github.ref }} )
+on:
+  push:
+  pull_request_target:
+jobs:
+  build:
+    name: Build Board ${{ matrix.boards.name }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        boards:
+          [
+            {
+              "name": "sc598",
+              "config": "defconfig",
+              "cross_compile": "aarch64-linux-gnu",
+              "arch": "arm64"
+            },
+            {
+              "name": "sc594",
+              "config": "defconfig",
+              "cross_compile": "arm-linux-gnueabi",
+              "arch": "arm"
+            },
+            {
+              "name": "sc589",
+              "config": "defconfig",
+              "cross_compile": "arm-linux-gnueabi",
+              "arch": "arm"
+            },
+            {
+              "name": "sc584",
+              "config": "defconfig",
+              "cross_compile": "arm-linux-gnueabi",
+              "arch": "arm"
+            },
+            {
+              "name": "sc573",
+              "config": "defconfig",
+              "cross_compile": "arm-linux-gnueabi",
+              "arch": "arm"
+            }
+          ]
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.ref }}
+        fetch-depth: 0
+
+    - name: Build ${{ matrix.boards.name }}
+      uses: adi-innersource/linux-scripts/.github/actions/build-linux-kernel@github-actions
+      with:
+        cross_compile: ${{ matrix.boards.cross_compile }}
+        arch: ${{ matrix.boards.arch }}
+        name: ${{ matrix.boards.name }}
